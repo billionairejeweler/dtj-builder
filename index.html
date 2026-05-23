@@ -5,800 +5,216 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dullaa The Jeweler — AI Custom Builder</title>
 <style>
-  :root {
-    --gold: #c9a24d;
-    --softgold: #e6d3a3;
-    --black: #050505;
-    --dark: #0b0b0b;
-    --darker: #080808;
-    --white: #f8f5ef;
-    --gray: #b8b8b8;
-    --border: rgba(201,162,77,0.2);
-    --glow: rgba(201,162,77,0.15);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--black);
-    color: var(--white);
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* HEADER */
-  .dtj-header {
-    text-align: center;
-    padding: 48px 24px 32px;
-    border-bottom: 1px solid var(--border);
-    background: linear-gradient(180deg, #0a0a0a 0%, var(--black) 100%);
-  }
-  .dtj-logo {
-    font-size: 11px;
-    letter-spacing: 5px;
-    font-weight: 700;
-    color: var(--gray);
-    text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-  .dtj-header h1 {
-    font-size: clamp(28px, 5vw, 52px);
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--white);
-    line-height: 1;
-    margin-bottom: 14px;
-  }
-  .dtj-header h1 span { color: var(--gold); }
-  .dtj-header p {
-    font-size: 14px;
-    color: var(--gray);
-    letter-spacing: 0.5px;
-    max-width: 480px;
-    margin: 0 auto;
-    line-height: 1.6;
-  }
-
-  /* MAIN CONTAINER */
-  .dtj-main {
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 40px 20px 80px;
-  }
-
-  /* STEP INDICATOR */
-  .dtj-steps {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0;
-    margin-bottom: 40px;
-  }
-  .dtj-step {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .step-dot {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    border: 1px solid rgba(201,162,77,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--gray);
-    transition: all 0.4s ease;
-  }
-  .step-dot.active {
-    background: var(--gold);
-    border-color: var(--gold);
-    color: #050505;
-  }
-  .step-dot.done {
-    background: rgba(201,162,77,0.15);
-    border-color: var(--gold);
-    color: var(--gold);
-  }
-  .step-label {
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--gray);
-    font-weight: 600;
-  }
-  .step-label.active { color: var(--softgold); }
-  .step-line {
-    width: 40px;
-    height: 1px;
-    background: rgba(201,162,77,0.2);
-    margin: 0 8px;
-  }
-
-  /* CARD */
-  .dtj-card {
-    background: var(--darker);
-    border: 1px solid var(--border);
-    padding: 36px;
-    margin-bottom: 20px;
-  }
-  .dtj-card-title {
-    font-size: 10px;
-    letter-spacing: 2px;
-    font-weight: 700;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .dtj-card-title::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  /* TEXTAREA */
-  .dtj-desc-wrap { position: relative; }
-  textarea#dtjDesc {
-    width: 100%;
-    min-height: 140px;
-    background: #060606;
-    border: 1px solid rgba(201,162,77,0.25);
-    color: var(--white);
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    font-size: 15px;
-    line-height: 1.7;
-    padding: 18px;
-    resize: none;
-    outline: none;
-    transition: border-color 0.3s ease;
-    letter-spacing: 0.3px;
-  }
-  textarea#dtjDesc:focus { border-color: var(--gold); }
-  textarea#dtjDesc::placeholder { color: #444; }
-
-  /* EXAMPLES */
-  .dtj-examples {
-    margin-top: 14px;
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .dtj-ex {
-    font-size: 11px;
-    padding: 6px 12px;
-    border: 1px solid rgba(201,162,77,0.2);
-    color: var(--gray);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    letter-spacing: 0.3px;
-  }
-  .dtj-ex:hover {
-    border-color: var(--gold);
-    color: var(--softgold);
-    background: rgba(201,162,77,0.05);
-  }
-
-  /* BUTTONS */
-  .dtj-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: linear-gradient(135deg, #c9a24d, #f4df9b, #9f7a28);
-    color: #050505;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 16px 32px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    width: 100%;
-    justify-content: center;
-    margin-top: 24px;
-  }
-  .dtj-btn:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
-  }
-  .dtj-btn:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    transform: none;
-  }
-  .dtj-btn-ghost {
-    background: transparent;
-    color: var(--gold);
-    border: 1px solid rgba(201,162,77,0.35);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 14px 28px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 12px;
-    width: 100%;
-  }
-  .dtj-btn-ghost:hover {
-    border-color: var(--gold);
-    background: rgba(201,162,77,0.05);
-  }
-
-  /* LOADING */
-  .dtj-loading {
-    text-align: center;
-    padding: 48px 24px;
-  }
-  .dtj-spinner {
-    width: 40px;
-    height: 40px;
-    border: 2px solid rgba(201,162,77,0.15);
-    border-top-color: var(--gold);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 24px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .dtj-loading p {
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--gray);
-  }
-  .dtj-loading-sub {
-    font-size: 12px;
-    color: #444;
-    margin-top: 8px;
-    letter-spacing: 0.3px;
-    text-transform: none;
-  }
-
-  /* RESULT SECTIONS */
-  .dtj-piece-name {
-    font-size: clamp(22px, 4vw, 36px);
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--white);
-    margin-bottom: 8px;
-    line-height: 1.1;
-  }
-  .dtj-piece-sub {
-    font-size: 12px;
-    letter-spacing: 1.5px;
-    color: var(--gold);
-    text-transform: uppercase;
-    font-weight: 600;
-    margin-bottom: 20px;
-  }
-  .dtj-desc-text {
-    font-size: 14px;
-    color: var(--gray);
-    line-height: 1.8;
-    border-left: 2px solid var(--border);
-    padding-left: 16px;
-    margin-bottom: 28px;
-    font-style: italic;
-  }
-
-  /* SPEC GRID */
-  .dtj-specs {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    margin-bottom: 28px;
-  }
-  .dtj-spec {
-    background: #080808;
-    padding: 16px;
-    text-align: center;
-  }
-  .dtj-spec-label {
-    font-size: 9px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: #555;
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-  .dtj-spec-val {
-    font-size: 13px;
-    color: var(--softgold);
-    font-weight: 600;
-    letter-spacing: 0.5px;
-  }
-
-  /* PRICE BREAKDOWN */
-  .dtj-breakdown {
-    border: 1px solid var(--border);
-    margin-bottom: 28px;
-    overflow: hidden;
-  }
-  .dtj-breakdown-header {
-    background: rgba(201,162,77,0.07);
-    padding: 12px 18px;
-    font-size: 9px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--gold);
-    font-weight: 700;
-  }
-  .dtj-breakdown-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 18px;
-    border-top: 1px solid rgba(201,162,77,0.08);
-    font-size: 13px;
-  }
-  .dtj-breakdown-row .label { color: var(--gray); }
-  .dtj-breakdown-row .val { color: var(--white); font-weight: 500; }
-  .dtj-breakdown-row.total {
-    background: rgba(201,162,77,0.05);
-    border-top: 1px solid rgba(201,162,77,0.2);
-  }
-  .dtj-breakdown-row.total .label {
-    color: var(--softgold);
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    font-size: 11px;
-  }
-  .dtj-breakdown-row.total .val {
-    color: var(--softgold);
-    font-size: 22px;
-    font-weight: 800;
-  }
-
-  /* DEPOSIT + TIMELINE */
-  .dtj-info-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 28px;
-  }
-  .dtj-info-box {
-    background: #060606;
-    border: 1px solid var(--border);
-    padding: 18px;
-    text-align: center;
-  }
-  .dtj-info-box-label {
-    font-size: 9px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: #555;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-  .dtj-info-box-val {
-    font-size: 15px;
-    color: var(--softgold);
-    font-weight: 700;
-    letter-spacing: 0.5px;
-  }
-
-  /* LEAD FORM */
-  .dtj-form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 12px;
-  }
-  .dtj-form-grid.full { grid-template-columns: 1fr; }
-  .dtj-field label {
-    display: block;
-    font-size: 9px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--gold);
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-  .dtj-field input {
-    width: 100%;
-    background: #060606;
-    border: 1px solid rgba(201,162,77,0.25);
-    color: var(--white);
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    font-size: 14px;
-    padding: 14px 16px;
-    outline: none;
-    transition: border-color 0.3s ease;
-    letter-spacing: 0.3px;
-  }
-  .dtj-field input:focus { border-color: var(--gold); }
-  .dtj-field input::placeholder { color: #444; }
-
-  /* SUCCESS */
-  .dtj-success {
-    text-align: center;
-    padding: 48px 24px;
-  }
-  .dtj-success-icon {
-    width: 56px;
-    height: 56px;
-    border: 1px solid var(--gold);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 24px;
-    font-size: 22px;
-    color: var(--gold);
-  }
-  .dtj-success h2 {
-    font-size: 24px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--white);
-    margin-bottom: 12px;
-  }
-  .dtj-success p {
-    font-size: 14px;
-    color: var(--gray);
-    line-height: 1.7;
-    max-width: 400px;
-    margin: 0 auto 24px;
-  }
-  .dtj-success .ref {
-    font-size: 11px;
-    letter-spacing: 2px;
-    color: var(--gold);
-    text-transform: uppercase;
-    font-weight: 600;
-  }
-
-  /* ERROR */
-  .dtj-error {
-    background: rgba(180, 30, 30, 0.08);
-    border: 1px solid rgba(180, 30, 30, 0.3);
-    padding: 14px 18px;
-    font-size: 13px;
-    color: #e88;
-    margin-top: 16px;
-    display: none;
-  }
-
-  /* FOOTER */
-  .dtj-footer {
-    text-align: center;
-    padding: 32px 24px;
-    border-top: 1px solid var(--border);
-    background: #030303;
-  }
-  .dtj-footer p {
-    font-size: 11px;
-    letter-spacing: 1.5px;
-    color: #444;
-    text-transform: uppercase;
-  }
-  .dtj-footer a {
-    color: var(--gold);
-    text-decoration: none;
-    transition: opacity 0.2s;
-  }
-  .dtj-footer a:hover { opacity: 0.7; }
-
-  /* DIVIDER */
-  .dtj-divider {
-    height: 1px;
-    background: var(--border);
-    margin: 28px 0;
-  }
-
-  /* MOBILE */
-  @media (max-width: 600px) {
-    .dtj-card { padding: 22px 16px; }
-    .dtj-form-grid { grid-template-columns: 1fr; }
-    .dtj-info-row { grid-template-columns: 1fr; }
-    .step-label { display: none; }
-    .step-line { width: 24px; }
-  }
+  :root { --gold:#c9a24d;--softgold:#e6d3a3;--black:#050505;--dark:#0b0b0b;--darker:#080808;--white:#f8f5ef;--gray:#b8b8b8;--border:rgba(201,162,77,0.2); }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--black);color:var(--white);font-family:'Helvetica Neue',Arial,sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
+  .dtj-header{text-align:center;padding:48px 24px 36px;border-bottom:1px solid var(--border);background:#080808}
+  .dtj-eyebrow{font-size:10px;letter-spacing:5px;font-weight:700;color:var(--gray);text-transform:uppercase;margin-bottom:16px}
+  .dtj-header h1{font-size:clamp(26px,5vw,48px);font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--white);line-height:1.1;margin-bottom:14px}
+  .dtj-header h1 span{color:var(--gold)}
+  .dtj-header p{font-size:14px;color:var(--gray);max-width:460px;margin:0 auto;line-height:1.7}
+  .dtj-steps{display:flex;align-items:center;justify-content:center;padding:28px 24px;border-bottom:1px solid var(--border);background:#060606}
+  .dtj-step-item{display:flex;align-items:center;gap:8px}
+  .s-dot{width:28px;height:28px;border-radius:50%;border:1px solid rgba(201,162,77,0.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#444;transition:all 0.4s ease;flex-shrink:0}
+  .s-dot.active{background:var(--gold);border-color:var(--gold);color:#050505}
+  .s-dot.done{background:rgba(201,162,77,0.12);border-color:var(--gold);color:var(--gold)}
+  .s-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#444;font-weight:600}
+  .s-label.active{color:var(--softgold)}
+  .s-line{width:40px;height:1px;background:rgba(201,162,77,0.15);margin:0 6px}
+  .dtj-main{max-width:720px;margin:0 auto;padding:36px 20px 80px}
+  .dtj-card{background:var(--darker);border:1px solid var(--border);padding:36px;margin-bottom:16px}
+  .dtj-card-label{font-size:10px;letter-spacing:2px;font-weight:700;color:var(--gold);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:12px}
+  .dtj-card-label::after{content:'';flex:1;height:1px;background:var(--border)}
+  textarea#dtjDesc{width:100%;min-height:130px;background:#060606;border:1px solid rgba(201,162,77,0.22);color:var(--white);font-family:'Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.7;padding:16px;resize:none;outline:none;transition:border-color 0.3s ease}
+  textarea#dtjDesc:focus{border-color:var(--gold)}
+  textarea#dtjDesc::placeholder{color:#333}
+  .dtj-examples{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
+  .dtj-ex{font-size:11px;padding:6px 12px;border:1px solid rgba(201,162,77,0.18);color:#666;cursor:pointer;transition:all 0.2s ease}
+  .dtj-ex:hover{border-color:var(--gold);color:var(--softgold);background:rgba(201,162,77,0.04)}
+  .dtj-btn{display:flex;align-items:center;justify-content:center;width:100%;margin-top:24px;background:linear-gradient(135deg,#c9a24d,#f4df9b,#9f7a28);color:#050505;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:16px 32px;border:none;cursor:pointer;transition:all 0.3s ease}
+  .dtj-btn:hover{opacity:0.9;transform:translateY(-1px)}
+  .dtj-btn:disabled{opacity:0.35;cursor:not-allowed;transform:none}
+  .dtj-btn-ghost{display:flex;align-items:center;justify-content:center;width:100%;margin-top:10px;background:transparent;color:var(--gold);border:1px solid rgba(201,162,77,0.3);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:14px 28px;cursor:pointer;transition:all 0.3s ease}
+  .dtj-btn-ghost:hover{border-color:var(--gold);background:rgba(201,162,77,0.04)}
+  .dtj-loading{text-align:center;padding:52px 24px}
+  .dtj-spinner{width:38px;height:38px;border:2px solid rgba(201,162,77,0.12);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 22px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .dtj-loading-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:8px}
+  .dtj-loading-sub{font-size:13px;color:#444}
+  .dtj-piece-name{font-size:clamp(20px,4vw,34px);font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--white);margin-bottom:6px;line-height:1.1}
+  .dtj-piece-cat{font-size:11px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;font-weight:600;margin-bottom:18px}
+  .dtj-piece-desc{font-size:14px;color:var(--gray);line-height:1.8;border-left:2px solid rgba(201,162,77,0.25);padding-left:16px;margin-bottom:28px;font-style:italic}
+  .dtj-specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:24px}
+  .dtj-spec{background:#080808;padding:14px;text-align:center}
+  .dtj-spec-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#444;font-weight:700;margin-bottom:6px}
+  .dtj-spec-val{font-size:13px;color:var(--softgold);font-weight:600}
+  .dtj-breakdown{border:1px solid var(--border);margin-bottom:24px}
+  .dtj-breakdown-head{background:rgba(201,162,77,0.06);padding:11px 18px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700}
+  .dtj-brow{display:flex;justify-content:space-between;align-items:center;padding:11px 18px;border-top:1px solid rgba(201,162,77,0.07);font-size:13px}
+  .dtj-brow .lbl{color:var(--gray)}
+  .dtj-brow .amt{color:var(--white);font-weight:500}
+  .dtj-brow.total{background:rgba(201,162,77,0.04);border-top:1px solid rgba(201,162,77,0.18)}
+  .dtj-brow.total .lbl{color:var(--softgold);font-weight:700;font-size:10px;letter-spacing:1.5px;text-transform:uppercase}
+  .dtj-brow.total .amt{color:var(--softgold);font-size:22px;font-weight:800}
+  .dtj-info-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+  .dtj-info-box{background:#060606;border:1px solid var(--border);padding:16px;text-align:center}
+  .dtj-info-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#444;font-weight:700;margin-bottom:8px}
+  .dtj-info-val{font-size:14px;color:var(--softgold);font-weight:700}
+  .dtj-divider{height:1px;background:var(--border);margin:24px 0}
+  .dtj-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+  .dtj-field label{display:block;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:8px}
+  .dtj-field input{width:100%;background:#060606;border:1px solid rgba(201,162,77,0.22);color:var(--white);font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;padding:13px 15px;outline:none;transition:border-color 0.3s ease}
+  .dtj-field input:focus{border-color:var(--gold)}
+  .dtj-field input::placeholder{color:#333}
+  .dtj-error{background:rgba(180,30,30,0.08);border:1px solid rgba(180,30,30,0.25);padding:12px 16px;font-size:13px;color:#e88;margin-top:14px;display:none}
+  .dtj-success{text-align:center;padding:52px 24px}
+  .dtj-success-icon{width:54px;height:54px;border-radius:50%;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;font-size:20px;color:var(--gold)}
+  .dtj-success h2{font-size:22px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--white);margin-bottom:12px}
+  .dtj-success p{font-size:14px;color:var(--gray);line-height:1.7;max-width:380px;margin:0 auto 20px}
+  .dtj-ref{font-size:11px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;font-weight:600}
+  .dtj-footer{text-align:center;padding:28px 24px;border-top:1px solid var(--border);background:#030303}
+  .dtj-footer p{font-size:10px;letter-spacing:1.5px;color:#333;text-transform:uppercase}
+  @media(max-width:580px){.dtj-card{padding:20px 16px}.dtj-form-grid{grid-template-columns:1fr}.dtj-info-row{grid-template-columns:1fr}.s-label{display:none}.s-line{width:20px}}
 </style>
 </head>
 <body>
-  
 <header class="dtj-header">
-  <div class="dtj-logo">Dullaa The Jeweler ᴰᵀᴶ</div>
+  <div class="dtj-eyebrow">Dullaa The Jeweler DTJ — Connecticut</div>
   <h1>AI Custom<br><span>Design Builder</span></h1>
-  <p>Describe the piece you want. Our AI analyzes your vision, builds your specs, and gives you a real price estimate — instantly.</p>
+  <p>Describe the piece you want. Our AI builds your full spec sheet and gives you a real price estimate instantly.</p>
 </header>
-
+<div class="dtj-steps">
+  <div class="dtj-step-item"><div class="s-dot active" id="d1">1</div><span class="s-label active" id="l1">Describe</span></div>
+  <div class="s-line"></div>
+  <div class="dtj-step-item"><div class="s-dot" id="d2">2</div><span class="s-label" id="l2">Your Design</span></div>
+  <div class="s-line"></div>
+  <div class="dtj-step-item"><div class="s-dot" id="d3">3</div><span class="s-label" id="l3">Claim It</span></div>
+</div>
 <main class="dtj-main">
-
-  <!-- STEP INDICATOR -->
-  <div class="dtj-steps" id="stepIndicator">
-    <div class="dtj-step">
-      <div class="step-dot active" id="dot1">1</div>
-      <span class="step-label active" id="lbl1">Describe</span>
-    </div>
-    <div class="step-line"></div>
-    <div class="dtj-step">
-      <div class="step-dot" id="dot2">2</div>
-      <span class="step-label" id="lbl2">Your Design</span>
-    </div>
-    <div class="step-line"></div>
-    <div class="dtj-step">
-      <div class="step-dot" id="dot3">3</div>
-      <span class="step-label" id="lbl3">Claim It</span>
-    </div>
-  </div>
-
-  <!-- STEP 1: DESCRIBE -->
   <div id="step1">
     <div class="dtj-card">
-      <div class="dtj-card-title">Describe Your Vision</div>
-      <div class="dtj-desc-wrap">
-        <textarea id="dtjDesc" placeholder="Tell us what you want... e.g. 'I want a 14k yellow gold nameplate pendant with my name Aaliyah in cursive, VVS diamonds, with a Cuban link chain' or 'Custom bottom 6 gold grillz, open face, 10k yellow gold'"></textarea>
-      </div>
+      <div class="dtj-card-label">Describe Your Vision</div>
+      <textarea id="dtjDesc" placeholder="Tell us what you want... e.g. '10k gold nameplate that says Dullaa with raised letters and pave diamond outline' or 'Custom bottom 6 grillz in 10k gold open face'"></textarea>
       <div class="dtj-examples">
-        <div class="dtj-ex" onclick="fillExample(this)">14k gold iced nameplate pendant</div>
-        <div class="dtj-ex" onclick="fillExample(this)">Custom bottom 6 gold grillz</div>
-        <div class="dtj-ex" onclick="fillExample(this)">Figueroa chain 10k gold 18 inch</div>
-        <div class="dtj-ex" onclick="fillExample(this)">Tricolor Cuban bracelet, iced out clasp</div>
-        <div class="dtj-ex" onclick="fillExample(this)">Custom logo pendant with diamonds</div>
+        <div class="dtj-ex" onclick="fill(this)">10k gold nameplate Dullaa pave diamonds</div>
+        <div class="dtj-ex" onclick="fill(this)">Custom bottom 6 grillz 10k gold</div>
+        <div class="dtj-ex" onclick="fill(this)">Figueroa chain 10k gold 18 inch</div>
+        <div class="dtj-ex" onclick="fill(this)">Tricolor Valentino bracelet iced clasp</div>
+        <div class="dtj-ex" onclick="fill(this)">Custom logo pendant with diamonds</div>
       </div>
-      <div class="dtj-error" id="step1Error">Please describe your piece before continuing.</div>
-      <button class="dtj-btn" onclick="runAI()">Analyze My Design →</button>
+      <div class="dtj-error" id="err1">Please describe your piece before continuing.</div>
+      <button class="dtj-btn" onclick="runAI()">Analyze My Design</button>
     </div>
   </div>
-
-  <!-- STEP 2: LOADING -->
-  <div id="step2loading" style="display:none;">
+  <div id="stepLoad" style="display:none">
     <div class="dtj-card">
       <div class="dtj-loading">
         <div class="dtj-spinner"></div>
-        <p id="loadingMsg">Analyzing your vision</p>
-        <p class="dtj-loading-sub" id="loadingSub">Our AI is building your custom spec sheet...</p>
+        <div class="dtj-loading-title" id="loadTitle">Analyzing your vision</div>
+        <div class="dtj-loading-sub" id="loadSub">Reading your description...</div>
       </div>
     </div>
   </div>
-
-  <!-- STEP 2: RESULT -->
-  <div id="step2result" style="display:none;">
+  <div id="step2" style="display:none">
     <div class="dtj-card">
-      <div class="dtj-card-title">Your Custom Design</div>
-      <div class="dtj-piece-name" id="pieceName"></div>
-      <div class="dtj-piece-sub" id="pieceSub"></div>
-      <div class="dtj-desc-text" id="pieceDesc"></div>
-
-      <div class="dtj-specs" id="specsGrid"></div>
-
-      <div class="dtj-breakdown" id="priceBreakdown"></div>
-
-      <div class="dtj-info-row" id="infoRow"></div>
-
+      <div class="dtj-card-label">Your Custom Design</div>
+      <div class="dtj-piece-name" id="rName"></div>
+      <div class="dtj-piece-cat" id="rCat"></div>
+      <div class="dtj-piece-desc" id="rDesc"></div>
+      <div class="dtj-specs" id="rSpecs"></div>
+      <div class="dtj-breakdown" id="rBreakdown"></div>
+      <div class="dtj-info-row" id="rInfo"></div>
       <div class="dtj-divider"></div>
-
-      <div style="font-size:11px;color:#555;letter-spacing:0.5px;line-height:1.7;margin-bottom:20px;">
-        This estimate is based on your description. Final pricing is confirmed after design review and approval. All pieces are quoted before production begins — no surprises.
-      </div>
-
-      <button class="dtj-btn" onclick="goToStep3()">Claim This Design →</button>
-      <button class="dtj-btn-ghost" onclick="resetBuilder()">Start Over</button>
+      <p style="font-size:12px;color:#444;line-height:1.7;margin-bottom:18px">This estimate is based on your description. Final pricing confirmed after design review. All pieces approved before production begins.</p>
+      <button class="dtj-btn" onclick="toStep3()">Claim This Design</button>
+      <button class="dtj-btn-ghost" onclick="reset()">Start Over</button>
     </div>
   </div>
-
-  <!-- STEP 3: LEAD CAPTURE -->
-  <div id="step3" style="display:none;">
+  <div id="step3" style="display:none">
     <div class="dtj-card">
-      <div class="dtj-card-title">Claim Your Design</div>
-      <p style="font-size:13px;color:var(--gray);line-height:1.7;margin-bottom:28px;">
-        Enter your info below and we'll reach out within 24 hours to finalize your piece, confirm pricing, and collect your deposit to begin production.
-      </p>
+      <div class="dtj-card-label">Claim Your Design</div>
+      <p style="font-size:13px;color:var(--gray);line-height:1.7;margin-bottom:26px">Enter your info and we will reach out within 24 hours to confirm your piece, finalize pricing, and collect your deposit.</p>
       <div class="dtj-form-grid">
-        <div class="dtj-field">
-          <label>First Name</label>
-          <input type="text" id="leadFirst" placeholder="Your name">
-        </div>
-        <div class="dtj-field">
-          <label>Last Name</label>
-          <input type="text" id="leadLast" placeholder="Last name">
-        </div>
+        <div class="dtj-field"><label>First Name</label><input type="text" id="fFirst" placeholder="First name"></div>
+        <div class="dtj-field"><label>Last Name</label><input type="text" id="fLast" placeholder="Last name"></div>
       </div>
-      <div class="dtj-form-grid full" style="margin-bottom:12px;">
-        <div class="dtj-field">
-          <label>Phone Number</label>
-          <input type="tel" id="leadPhone" placeholder="(203) 000-0000">
-        </div>
-      </div>
-      <div class="dtj-form-grid full" style="margin-bottom:0;">
-        <div class="dtj-field">
-          <label>Email Address</label>
-          <input type="email" id="leadEmail" placeholder="your@email.com">
-        </div>
-      </div>
-      <div class="dtj-error" id="step3Error">Please fill in all fields before submitting.</div>
-      <button class="dtj-btn" onclick="submitLead()">Start My Custom Order →</button>
-      <button class="dtj-btn-ghost" onclick="goBack()">← Back to Design</button>
+      <div class="dtj-field" style="margin-bottom:12px"><label>Phone Number</label><input type="tel" id="fPhone" placeholder="(203) 000-0000"></div>
+      <div class="dtj-field"><label>Email Address</label><input type="email" id="fEmail" placeholder="your@email.com"></div>
+      <div class="dtj-error" id="err3">Please fill in all fields.</div>
+      <button class="dtj-btn" onclick="submitForm()">Start My Custom Order</button>
+      <button class="dtj-btn-ghost" onclick="toStep2()">Back to Design</button>
     </div>
   </div>
-
-  <!-- SUCCESS -->
-  <div id="step4" style="display:none;">
+  <div id="step4" style="display:none">
     <div class="dtj-card">
       <div class="dtj-success">
-        <div class="dtj-success-icon">✦</div>
+        <div class="dtj-success-icon">*</div>
         <h2>Order Started</h2>
         <p>We received your design request and will reach out within 24 hours to confirm your specs, finalize pricing, and collect your deposit.</p>
-        <p class="ref" id="refNum"></p>
+        <div class="dtj-ref" id="rRef"></div>
       </div>
     </div>
   </div>
-
 </main>
-
 <footer class="dtj-footer">
-  <p>Dullaa The Jeweler · Connecticut · <a href="/contact">Custom Orders</a> · Real Gold · Real Craft</p>
+  <p>Dullaa The Jeweler - Connecticut - Real Gold - Real Craft</p>
 </footer>
-
 <script>
-var currentDesign = null;
-var LOADING_MSGS = [
-  ["Analyzing your vision", "Reading your description..."],
-  ["Building your spec sheet", "Calculating materials and weight..."],
-  ["Generating your estimate", "Applying gold rates and labor..."],
-  ["Finalizing your design", "Almost ready..."]
-];
-var loadMsgIdx = 0;
-var loadInterval = null;
-
-function fillExample(el) {
-  document.getElementById('dtjDesc').value = el.textContent;
-  document.getElementById('dtjDesc').focus();
-}
-
-function setStep(n) {
-  for (var i = 1; i <= 3; i++) {
-    var dot = document.getElementById('dot' + i);
-    var lbl = document.getElementById('lbl' + i);
-    dot.className = 'step-dot';
-    lbl.className = 'step-label';
-    if (i < n) { dot.classList.add('done'); dot.innerHTML = '✓'; }
-    else if (i === n) { dot.classList.add('active'); dot.innerHTML = i; lbl.classList.add('active'); }
-    else { dot.innerHTML = i; }
+var K='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';
+var design=null;
+var msgs=[['Analyzing your vision','Reading your description...'],['Building your spec sheet','Calculating materials and weight...'],['Generating your estimate','Applying gold rates and labor costs...'],['Finalizing your design','Almost ready...']];
+var msgIdx=0,msgTimer=null;
+function fill(el){document.getElementById('dtjDesc').value=el.textContent;}
+function setStep(n){for(var i=1;i<=3;i++){var d=document.getElementById('d'+i),l=document.getElementById('l'+i);d.className='s-dot';l.className='s-label';if(i<n){d.classList.add('done');d.innerHTML='done';}else if(i===n){d.classList.add('active');d.innerHTML=i;l.classList.add('active');}else{d.innerHTML=i;}}}
+function hide(id){document.getElementById(id).style.display='none';}
+function show(id){document.getElementById(id).style.display='block';}
+function hideAll(){['step1','stepLoad','step2','step3','step4'].forEach(hide);}
+async function runAI(){
+  var desc=document.getElementById('dtjDesc').value.trim();
+  var e=document.getElementById('err1');e.style.display='none';
+  if(!desc){e.style.display='block';return;}
+  hideAll();show('stepLoad');setStep(2);
+  msgIdx=0;
+  msgTimer=setInterval(function(){msgIdx=(msgIdx+1)%msgs.length;document.getElementById('loadTitle').textContent=msgs[msgIdx][0];document.getElementById('loadSub').textContent=msgs[msgIdx][1];},1800);
+  var sys='You are the AI design analyst for Dullaa The Jeweler, a luxury jewelry brand in Connecticut. Analyze the customer jewelry description and return ONLY a valid JSON object with no preamble no markdown just raw JSON. Required keys: pieceName (short name), category (Pendant or Grillz or Chain or Bracelet or Earrings or Custom or Combo), description (2-3 sentences describing finished piece), specs (array of label and value objects 4-6 items), breakdown (array of label and amount objects where amount is a number), totalLow (number), totalHigh (number), deposit (string), timeline (string), note (string). Pricing rates: 10k gold 32-38 per gram, 14k gold 44-50 per gram, moissanite 150-400, VVS lab diamonds 300-800, natural diamonds 800-2500, labor 150-400, grillz mold 200, nameplate design fee 150.';
+  try{
+    var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':K,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1000,system:sys,messages:[{role:'user',content:'Customer request: '+desc}]})});
+    clearInterval(msgTimer);
+    var data=await res.json();
+    if(data.error){throw new Error(data.error.message);}
+    var raw=data.content[0].text.replace(/```json|```/g,'').trim();
+    design=JSON.parse(raw);
+    renderResult(design);
+  }catch(err){
+    clearInterval(msgTimer);
+    hideAll();show('step1');setStep(1);
+    var e2=document.getElementById('err1');
+    e2.textContent='Error: '+err.message+'. Please try again.';
+    e2.style.display='block';
   }
 }
-
-function hideAll() {
-  ['step1','step2loading','step2result','step3','step4'].forEach(function(id){
-    document.getElementById(id).style.display = 'none';
-  });
+function renderResult(d){
+  document.getElementById('rName').textContent=d.pieceName;
+  document.getElementById('rCat').textContent=d.category+' - Dullaa The Jeweler';
+  document.getElementById('rDesc').textContent=d.description;
+  var sp='';d.specs.forEach(function(s){sp+='<div class="dtj-spec"><div class="dtj-spec-label">'+s.label+'</div><div class="dtj-spec-val">'+s.value+'</div></div>';});
+  document.getElementById('rSpecs').innerHTML=sp;
+  var br='<div class="dtj-breakdown-head">Price Breakdown</div>';
+  d.breakdown.forEach(function(r){br+='<div class="dtj-brow"><span class="lbl">'+r.label+'</span><span class="amt">$'+Number(r.amount).toLocaleString()+'</span></div>';});
+  br+='<div class="dtj-brow total"><span class="lbl">Estimated Range</span><span class="amt">$'+Number(d.totalLow).toLocaleString()+' to $'+Number(d.totalHigh).toLocaleString()+'</span></div>';
+  document.getElementById('rBreakdown').innerHTML=br;
+  document.getElementById('rInfo').innerHTML='<div class="dtj-info-box"><div class="dtj-info-lbl">Deposit to Start</div><div class="dtj-info-val">'+d.deposit+'</div></div><div class="dtj-info-box"><div class="dtj-info-lbl">Production Time</div><div class="dtj-info-val">'+d.timeline+'</div></div>';
+  hideAll();show('step2');setStep(2);window.scrollTo({top:0,behavior:'smooth'});
 }
-
-function show(id) { document.getElementById(id).style.display = 'block'; }
-
-async function runAI() {
-  var desc = document.getElementById('dtjDesc').value.trim();
-  var errEl = document.getElementById('step1Error');
-  errEl.style.display = 'none';
-  if (!desc) { errEl.style.display = 'block'; return; }
-
-  hideAll();
-  show('step2loading');
-  setStep(2);
-  loadMsgIdx = 0;
-  loadInterval = setInterval(function() {
-    loadMsgIdx = (loadMsgIdx + 1) % LOADING_MSGS.length;
-    document.getElementById('loadingMsg').textContent = LOADING_MSGS[loadMsgIdx][0];
-    document.getElementById('loadingSub').textContent = LOADING_MSGS[loadMsgIdx][1];
-  }, 1800);
-
-  var systemPrompt = "You are the AI design analyst for Dullaa The Jeweler, a luxury jewelry brand based in Connecticut. Your job is to analyze a customer's jewelry description and return a detailed spec sheet and price estimate.\n\nAlways respond with a valid JSON object and NOTHING else. No preamble, no markdown, no explanation. Just the JSON.\n\nThe JSON must have these exact keys:\n- pieceName: short name for the piece (e.g. 'Iced Nameplate Pendant')\n- category: one of [Pendant, Grillz, Chain, Bracelet, Earrings, Custom, Combo]\n- description: 2-3 sentence visual description of what the finished piece looks like. Be specific and evocative.\n- specs: array of {label, value} objects (4-6 specs like Metal, Karat, Weight, Style, Stone, Finish)\n- breakdown: array of {label, amount} cost line items (gold cost, stone cost, labor, design fee etc)\n- totalLow: number (low end estimate)\n- totalHigh: number (high end estimate)\n- deposit: string (deposit amount required to start, e.g. '$150 design deposit')\n- timeline: string (production timeline, e.g. '2-3 weeks')\n- note: string (one sentence note about pricing or customization)\n\nFor pricing, use realistic jewelry market rates:\n- 10k gold: ~$30-38 per gram\n- 14k gold: ~$42-50 per gram\n- Moissanite: $150-400 depending on size\n- VVS Lab Diamonds: $300-800 depending on CTW\n- Natural Diamonds: $800-2500+\n- Labor/design: $150-400 depending on complexity\n- Custom grillz mold fee: $200\n- Nameplate design fee: $150";
-
-  try {
-    var response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: 'Customer request: ' + desc }]
-      })
-    });
-
-    clearInterval(loadInterval);
-    var data = await response.json();
-    var raw = data.content[0].text;
-    var clean = raw.replace(/```json|```/g, '').trim();
-    currentDesign = JSON.parse(clean);
-    renderResult(currentDesign, desc);
-
-  } catch(e) {
-    clearInterval(loadInterval);
-    hideAll();
-    show('step1');
-    setStep(1);
-    var err = document.getElementById('step1Error');
-    err.textContent = 'Something went wrong. Please try again.';
-    err.style.display = 'block';
-  }
-}
-
-function renderResult(d, originalDesc) {
-  document.getElementById('pieceName').textContent = d.pieceName;
-  document.getElementById('pieceSub').textContent = d.category + ' · Dullaa The Jeweler';
-  document.getElementById('pieceDesc').textContent = d.description;
-
-  var specsHtml = '';
-  d.specs.forEach(function(s) {
-    specsHtml += '<div class="dtj-spec"><div class="dtj-spec-label">' + s.label + '</div><div class="dtj-spec-val">' + s.value + '</div></div>';
-  });
-  document.getElementById('specsGrid').innerHTML = specsHtml;
-
-  var bHtml = '<div class="dtj-breakdown-header">Price Breakdown</div>';
-  d.breakdown.forEach(function(row) {
-    bHtml += '<div class="dtj-breakdown-row"><span class="label">' + row.label + '</span><span class="val">$' + row.amount.toLocaleString() + '</span></div>';
-  });
-  bHtml += '<div class="dtj-breakdown-row total"><span class="label">Estimated Range</span><span class="val">$' + d.totalLow.toLocaleString() + ' — $' + d.totalHigh.toLocaleString() + '</span></div>';
-  document.getElementById('priceBreakdown').innerHTML = bHtml;
-
-  document.getElementById('infoRow').innerHTML =
-    '<div class="dtj-info-box"><div class="dtj-info-box-label">Deposit to Start</div><div class="dtj-info-box-val">' + d.deposit + '</div></div>' +
-    '<div class="dtj-info-box"><div class="dtj-info-box-label">Production Time</div><div class="dtj-info-box-val">' + d.timeline + '</div></div>';
-
-  hideAll();
-  show('step2result');
-  setStep(2);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function goToStep3() {
-  hideAll();
-  show('step3');
-  setStep(3);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function goBack() {
-  hideAll();
-  show('step2result');
-  setStep(2);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function resetBuilder() {
-  hideAll();
-  show('step1');
-  setStep(1);
-  document.getElementById('dtjDesc').value = '';
-  currentDesign = null;
-  document.getElementById('step1Error').style.display = 'none';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function submitLead() {
-  var first = document.getElementById('leadFirst').value.trim();
-  var last = document.getElementById('leadLast').value.trim();
-  var phone = document.getElementById('leadPhone').value.trim();
-  var email = document.getElementById('leadEmail').value.trim();
-  var errEl = document.getElementById('step3Error');
-  errEl.style.display = 'none';
-
-  if (!first || !last || !phone || !email) {
-    errEl.style.display = 'block';
-    return;
-  }
-
-  var ref = 'DTJ-' + Date.now().toString().slice(-6);
-  document.getElementById('refNum').textContent = 'Reference: ' + ref;
-
-  hideAll();
-  show('step4');
-  setStep(3);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+function toStep3(){hideAll();show('step3');setStep(3);window.scrollTo({top:0,behavior:'smooth'});}
+function toStep2(){hideAll();show('step2');setStep(2);window.scrollTo({top:0,behavior:'smooth'});}
+function reset(){hideAll();show('step1');setStep(1);document.getElementById('dtjDesc').value='';design=null;document.getElementById('err1').style.display='none';window.scrollTo({top:0,behavior:'smooth'});}
+function submitForm(){
+  var first=document.getElementById('fFirst').value.trim(),last=document.getElementById('fLast').value.trim(),phone=document.getElementById('fPhone').value.trim(),email=document.getElementById('fEmail').value.trim();
+  var e=document.getElementById('err3');e.style.display='none';
+  if(!first||!last||!phone||!email){e.style.display='block';return;}
+  document.getElementById('rRef').textContent='Reference: DTJ-'+Date.now().toString().slice(-6);
+  hideAll();show('step4');setStep(3);window.scrollTo({top:0,behavior:'smooth'});
 }
 </script>
 </body>
